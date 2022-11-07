@@ -141,7 +141,7 @@ The existing app, uses an observable to handle keyboard input and filter the lis
 Create another observable property.
 Note: combineLatest() will not execute until both observable emit a value.
 When we start, the user has not entered a search term, so the screen is blank.
-This solution uses the startWith() operator, but we also could have changed ```searchTerm$ = new Subject<string>();``` to use BehaviorSUbject and initialized it to ''.
+This solution uses the startWith() operator, but we also could have changed ```searchTerm$ = new Subject<string>();``` to use BehaviorSubject and initialized it to undefined.
 
 ```javascript
   filteredBooks$ = combineLatest([this.books$,
