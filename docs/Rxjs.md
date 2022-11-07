@@ -158,6 +158,12 @@ This solution uses the startWith() operator, but we also could have changed ```s
     );
 ```
 
+### collection.component.html
+```diff
+- <mat-list *ngIf="books$ | async as books">
++ <mat-list *ngIf="filteredBooks$ | async as books">
+```
+
 Run the app and make sure we can now filter the results.
 
 ## Refresh data after add or delete

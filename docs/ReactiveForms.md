@@ -71,8 +71,8 @@ Add property to component for the form model.
 - <my-rating [rating]="book.rating" >
 + <my-rating [rating]="newBookForm.get('rating')" >
 
-- <button type="submit " [disabled]="newBookForm.form.invalid">
-+ <button type="submit " [disabled]="newBookForm.invalid">
+- <button type="submit" [disabled]="newBookForm.form.invalid">
++ <button type="submit" [disabled]="newBookForm.invalid">
 ```
 
 ## Run and examine form
@@ -106,6 +106,21 @@ import { Validators } from '@angular/forms';
 - <input matInput placeholder="Author" formControlName="author" name="author" required />
 + <input matInput placeholder="Book Title" formControlName="title" />
 + <input matInput placeholder="Author" formControlName="author" />
+```
+
+## Add Error Messages
+
+### new-book.component.html
+Insert error messages for Title field following this section of HTML:
+```html
+<mat-form-field>
+  <input matInput placeholder="Book Title" formControlName="title" />
+</mat-form-field>
+```
+```diff
++ <mat-error *ngIf="newBookForm.controls['title'].dirty && newBookForm.controls['title'].errors?.required">Title is required</mat-error>
++ <mat-error *ngIf="newBookForm.controls['title'].dirty && newBookForm.controls['title'].hasError('minlength')">Title is too short</mat-error>
++ <br />
 ```
 
 ## FormBuilder syntax
