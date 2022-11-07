@@ -33,22 +33,22 @@ Add property to component for the form model.
    }
 
 +  newBookForm = new FormGroup({
-+    title: new FormControl(''),
-+    author: new FormControl(''),
-+    isCheckedOut: new FormControl(false),
-+    rating: new FormControl(0)
++    id: new FormControl<number>(0),
++    title: new FormControl<string>(''),
++    author: new FormControl<string>(''),
++    isCheckedOut: new FormControl<boolean>(false),
++    rating: new FormControl<number>(0)
 +  });
+
++  get book() {
++    return this.newBookForm.value as IBook; // cast to correct type, which cannot be done in the template
++  }
 ```
 
 ```diff
   save(): void {
 -    this._dialogRef.close(this.book);
 +    this._dialogRef.close(this.newBookForm.value);
-  }
-
-  onRatingUpdate(rating: number): void {
--   this.book.rating = rating;
-+    this.newBookForm.get('rating').setValue(rating);
   }
 ```
 ### new-book.component.html
@@ -68,8 +68,8 @@ Add property to component for the form model.
 - [(ngModel)]="book.isCheckedOut"
 + formControlName="isCheckedOut"
 
-- <my-rating [rating]="book.rating" >
-+ <my-rating [rating]="newBookForm.get('rating')" >
+- <my-rating [rating]="book.rating" [book]="book">
++ <my-rating [rating]="newBookForm.get('rating')?.value || 0" [book]="book">
 
 - <button type="submit" [disabled]="newBookForm.form.invalid">
 + <button type="submit" [disabled]="newBookForm.invalid">
