@@ -4,7 +4,7 @@ https://ngrx.io/
 https://ngrx.io/guide/store#diagram
 *Draw this diagram on the whiteboard to refer to during this module*
 
-https://ngrx.io/docs#when-should-i-use-ngrx-for-state-management
+https://ngrx.io/guide/store/why#when-should-i-use-ngrx-store-for-state-management
 
 ## Start with ngrx_start
 
