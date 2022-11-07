@@ -78,11 +78,9 @@ Add property to component for the form model.
 ## Run and examine form
 
 ### new-book.component.ts
-Set a breakpoint when rating updated and book saved.
+Set a breakpoint when the book is saved.
 ```javascript
   save(): void {
-  }
-  onRatingUpdate(rating: number): void {
   }
 ```
 
