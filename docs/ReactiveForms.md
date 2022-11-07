@@ -109,10 +109,14 @@ import { Validators } from '@angular/forms';
 ```
 
 ## Add Error Messages
+
 ### new-book.component.html
+Insert error messages for Title field following this section of HTML:
+```html
 <mat-form-field>
   <input matInput placeholder="Book Title" formControlName="title" />
 </mat-form-field>
+```
 ```diff
 + <mat-error *ngIf="newBookForm.controls['title'].dirty && newBookForm.controls['title'].errors?.required">Title is required</mat-error>
 + <mat-error *ngIf="newBookForm.controls['title'].dirty && newBookForm.controls['title'].hasError('minlength')">Title is too short</mat-error>
