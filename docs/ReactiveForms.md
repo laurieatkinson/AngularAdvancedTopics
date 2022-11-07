@@ -91,10 +91,11 @@ Set a breakpoint when the book is saved.
 import { Validators } from '@angular/forms';
 
   newBookForm = new FormGroup({
-    title: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    author: new FormControl('', Validators.required),
-    isCheckedOut: new FormControl(false),
-    rating: new FormControl(0)
+    id: new FormControl<number>(0),
+    title: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+    author: new FormControl<string>('', Validators.required),
+    isCheckedOut: new FormControl<boolean>(false),
+    rating: new FormControl<number>(0)
   });
 ```
 
@@ -116,7 +117,7 @@ Insert error messages for Title field following this section of HTML:
 </mat-form-field>
 ```
 ```diff
-+ <mat-error *ngIf="newBookForm.controls['title'].dirty && newBookForm.controls['title'].errors?.required">Title is required</mat-error>
++ <mat-error *ngIf="newBookForm.controls['title'].dirty && newBookForm.controls['title'].errors?.['required']">Title is required</mat-error>
 + <mat-error *ngIf="newBookForm.controls['title'].dirty && newBookForm.controls['title'].hasError('minlength')">Title is too short</mat-error>
 + <br />
 ```
@@ -135,10 +136,11 @@ Another service available to make the form easier.
 
 ```diff
 -  newBookForm = new FormGroup({
--    title: new FormControl('', [Validators.required, Validators.minLength(3)]),
--    author: new FormControl('', Validators.required),
--    isCheckedOut: new FormControl(false),
--    rating: new FormControl(0)
+-    id: new FormControl<number>(0),
+-    title: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+-    author: new FormControl<string>('', Validators.required),
+-    isCheckedOut: new FormControl<boolean>(false),
+-    rating: new FormControl<number>(0)
 -  });
 
 +  newBookForm = this.fb.group({
@@ -146,15 +148,15 @@ Another service available to make the form easier.
 +    author: ['', Validators.required],
 +    isCheckedOut: [false],
 +    rating: [0],
-+    libraryAddress: this.fb.group({
-+      street: [''],
-+      city: [''],
-+      state: [''],
-+      zip: ['']
-+    }),
-+    reviews: this.fb.array([
-+      this.fb.control('')
-+    ]),
++    //libraryAddress: this.fb.group({
++    //  street: [''],
++    //  city: [''],
++    //  state: [''],
++    //  zip: ['']
++    //}),
++    //reviews: this.fb.array([
++    //  this.fb.control('')
++    //]),
 +  });
 ```
 
@@ -166,7 +168,7 @@ https://angular.io/api/forms/AbstractControl#abstractcontrol
 ### new-book.component.ts
 ```javascript
   ngOnInit() {
-    this.newBookForm.get('isCheckedOut').valueChanges.subscribe(
+    this.newBookForm.get('isCheckedOut')?.valueChanges.subscribe(
       isCheckedout => {
         console.log(`Is checkedout = ${isCheckedout}`);
       }
