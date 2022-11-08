@@ -203,4 +203,4 @@ Now we just need to call the refresh method when the user adds or removes a book
 
 ## Use RxJS with SignalR
 
-[Demo project](/../src/signalr-angular-demo)
+[Demo project](../src/signalr-angular-demo)
