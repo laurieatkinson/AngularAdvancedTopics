@@ -200,3 +200,7 @@ Now we just need to call the refresh method when the user adds or removes a book
     this._dataService.refreshBooks();
   }
 ```
+
+## Use RxJS with SignalR
+
+[Demo project](/../src/signalr-angular-demo)
