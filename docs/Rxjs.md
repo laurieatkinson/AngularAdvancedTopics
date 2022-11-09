@@ -59,9 +59,9 @@ We need to fix the getBooks() method as well since it uses the subscribe(). For 
 ### collection.component.html
 Modify the template to use the observable instead of the books array.a.
 ```html
-  <div *ngIf="!books$">Retrieving books...</div>
+  <ng-template #loading><h4>Retrieving books...</h4></ng-template>
 
-  <mat-list *ngIf="books$ | async as books">
+  <mat-list *ngIf="(books$ | async) as books; else loading">
 ```
 
 Run the app to make sure it is still working.
@@ -70,6 +70,7 @@ Run the app to make sure it is still working.
 Note that the data.service is catching any errors from the http request, logging, and then throwing a newly created error message.
 The UI is ignoring it though.
 ```javascript
+  ngOnInit() {
     this.books$ = this._dataService.getBooks()
       .pipe(
         catchError(err => {
@@ -78,6 +79,7 @@ The UI is ignoring it though.
           // We could have optionally populated some default data
         })
     );
+  }
 ```
 
 ## Point directly to observable in data service
@@ -116,15 +118,6 @@ And, anywhere that calls ```this._dataService.getBooks()``` needs to be replaced
 
 ### collection.component.ts
 ```javascript
-  books$ = this._dataService.books$
-  .pipe(
-    catchError(err => {
-      return EMPTY; 
-    })
-  );
-
-  // ngOnInit() {}
-
   // This method is called to refresh the screen after a book is added or deleted.
   // We'll need to find another way to do this.
   getBooks(): void {
@@ -144,24 +137,38 @@ When we start, the user has not entered a search term, so the screen is blank.
 This solution uses the startWith() operator, but we also could have changed ```searchTerm$ = new Subject<string>();``` to use BehaviorSubject and initialized it to ''.
 
 ```javascript
-  filteredBooks$ = combineLatest([this.books$,
-    this.searchTerm$.pipe(
-      startWith(''),
-      debounceTime(400),
-      distinctUntilChanged())
-    ])
-    .pipe(
-      map(([books, term]) => {
-        return books.filter(
-          book => term ? (book.author.includes(term) || book.title.includes(term)) : true);
-      })
+  books$: Observable<IBook[]> | undefined;
+  filteredBooks$: Observable<IBook[]> | undefined;
+
+  ngOnInit() {
+    this.books$ = this._dataService.getBooks()
+      .pipe(
+        catchError(err => {
+          // show error on the screen
+          return EMPTY; // an observable that emits no items and completes
+          // We could have optionally populated some default data
+        })
     );
+
+    this.filteredBooks$ = combineLatest([this.books$,
+      this.searchTerm$.pipe(
+        startWith(''),
+        debounceTime(400),
+        distinctUntilChanged())
+      ])
+      .pipe(
+        map(([books, term]) => {
+          return books.filter(
+            book => term ? (book.author.includes(term) || book.title.includes(term)) : true);
+        })
+      );
+  }
 ```
 
 ### collection.component.html
 ```diff
-- <mat-list *ngIf="books$ | async as books">
-+ <mat-list *ngIf="filteredBooks$ | async as books">
+- <mat-list *ngIf="(books$ | async) as books; else loading">
++ <mat-list *ngIf="(filteredBooks$ | async) as books; else loading">
 ```
 
 Run the app and make sure we can now filter the results.

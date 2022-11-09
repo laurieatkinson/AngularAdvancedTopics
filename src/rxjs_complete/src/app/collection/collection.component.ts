@@ -16,30 +16,12 @@ import { catchError, debounceTime, distinctUntilChanged, map, startWith } from '
 export class CollectionComponent {
 
   pageTitle = '';
-  books$ = this._dataService.books$.pipe(
-    catchError(err => {
-      // show error on the screen
-      return EMPTY; // an observable that emits no items and completes
-      // We could have optionally populated some default data
-    })
-  );
+  books$: Observable<IBook[]> | undefined;
+  filteredBooks$: Observable<IBook[]> | undefined;
   showOperatingHours = false;
   openingTime: Date;
   closingTime: Date;
   searchTerm$ = new Subject<string>();
-
-  filteredBooks$ = combineLatest([this.books$,
-    this.searchTerm$.pipe(
-      startWith(''),
-      debounceTime(400),
-      distinctUntilChanged())
-  ])
-  .pipe(
-    map(([books, term]) => {
-      return books.filter(
-        book => term ? (book.author.includes(term) || book.title.includes(term)) : true);
-    })
-  );
 
   constructor(private _snackBar: MatSnackBar,
     private _dataService: DataService,
@@ -50,6 +32,29 @@ export class CollectionComponent {
     this.openingTime.setHours(10, 0);
     this.closingTime = new Date();
     this.closingTime.setHours(15, 0);
+  }
+
+  ngOnInit() {
+    this.books$ = this._dataService.books$.pipe(
+      catchError(err => {
+        // show error on the screen
+        return EMPTY; // an observable that emits no items and completes
+        // We could have optionally populated some default data
+      })
+    );
+
+    this.filteredBooks$ = combineLatest([this.books$,
+      this.searchTerm$.pipe(
+        startWith(''),
+        debounceTime(400),
+        distinctUntilChanged())
+    ])
+    .pipe(
+      map(([books, term]) => {
+        return books.filter(
+          book => term ? (book.author.includes(term) || book.title.includes(term)) : true);
+      })
+    );
   }
 
   updateMessage(message: string, type: string): void {

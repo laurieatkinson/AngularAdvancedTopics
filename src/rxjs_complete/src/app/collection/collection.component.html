@@ -10,11 +10,11 @@
     <mat-card-content>{{openingTime | date:'shortTime'}} - {{closingTime | date:'shortTime'}} (M-F)</mat-card-content>
   </mat-card>
 </div>
-<div *ngIf="!books$">Retrieving books...</div>
+<ng-template #loading><h4>Retrieving books...</h4></ng-template>
 <div>
   Search Books By Title or Author:
   <input (keyup)="onSearchModified($event)">
-  <mat-list *ngIf="filteredBooks$ | async as books">
+  <mat-list *ngIf="(filteredBooks$ | async) as books; else loading">
     <mat-list-item *ngFor="let book of books">
       <mat-icon mat-list-icon>book</mat-icon>
       <h3 mat-line>
